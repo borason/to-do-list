@@ -5,6 +5,7 @@ const bodyParser = require('body-parser');
 const app = express();
 // const ejs = require('ejs');
 const port = 3000;
+const items = [];
 
 app.set('view engine', 'ejs');
 app.use(bodyParser.urlencoded({
@@ -12,13 +13,16 @@ app.use(bodyParser.urlencoded({
 }));
 
 app.get('/', (req, res) => {
-  const item = 'New List Item';
   res.render('list', {
-    listItem: item
+    items: items
   });
 });
 
-app.post('/', (req, res) => console.log(req.body.newListItem));
+app.post('/', (req, res) => {
+  const newPost = req.body.newListItem;
+  items.push(newPost);
+  res.redirect('/');
+});
 
 
 app.listen(port, () => console.log(`Server has started on port ${port}.`));
