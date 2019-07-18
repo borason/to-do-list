@@ -12,14 +12,15 @@
   <title>To Do List</title>
   <meta name="description" content="">
   <meta name="viewport" content="width=device-width, initial-scale=1">
-  <link rel="stylesheet" href="">
+  <link rel="stylesheet" href="/css/styles.css">
 </head>
 
 <body>
   <h1>To Do List For</h1>
+  <h1><%=date%></h1>
   <form action="/" method="POST">
     <ul>
-      <%items.forEach((item) => { %>
+      <%newItems.forEach((item) => { %>
       <li><%=item%></li>
       <%});%>
 

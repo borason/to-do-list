@@ -12,9 +12,20 @@ app.use(bodyParser.urlencoded({
   extended: true
 }));
 
+app.use(express.static('public'));
+
 app.get('/', (req, res) => {
+  const today = new Date();
+  var options = {
+    weekday: 'long',
+    year: 'numeric',
+    month: 'long',
+    day: 'numeric'
+  };
+  let date = today.toLocaleDateString('en-US', options);
   res.render('list', {
-    items: items
+    newItems: items,
+    date: date
   });
 });
 
