@@ -23,6 +23,7 @@ app.get('/', (req, res) => {
     day: 'numeric'
   };
   let date = today.toLocaleDateString('en-US', options);
+
   res.render('list', {
     newItems: items,
     date: date
@@ -31,6 +32,7 @@ app.get('/', (req, res) => {
 
 app.post('/', (req, res) => {
   const newPost = req.body.newListItem;
+  console.log(newPost);
   items.push(newPost);
   res.redirect('/');
 });

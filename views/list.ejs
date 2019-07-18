@@ -12,22 +12,39 @@
   <title>To Do List</title>
   <meta name="description" content="">
   <meta name="viewport" content="width=device-width, initial-scale=1">
+  <link rel="stylesheet" href="/css/materialize.css">
   <link rel="stylesheet" href="/css/styles.css">
+  <link href="https://fonts.googleapis.com/icon?family=Material+Icons" rel="stylesheet">
 </head>
 
 <body>
-  <h1>To Do List For</h1>
-  <h1><%=date%></h1>
-  <form action="/" method="POST">
-    <ul>
-      <%newItems.forEach((item) => { %>
-      <li><%=item%></li>
-      <%});%>
+  <div class="container">
+    <nav class="teal accent-4">
+      <div class="nav-wrapper">
+        <a href="#" class="brand-logo center">To Do List</a>
+      </div>
+    </nav>
+    <form action="/" method="POST">
+      <ul class="collection with-header">
+        <li class="collection-header">
+          <h4>Task</h4>
+        </li>
+        <%newItems.forEach((item) => { %>
+        <li class="collection-item">
+          <!-- <button type="submit"><i class="tiny material-icons">delete</i></th></button> -->
+          <label class="list-item">
+            <p><%=item%></p>
+            <input type="checkbox" />
+            <span>Red</span>
+          </label>
 
-    </ul>
-    <input type="text" name='newListItem'>
-    <button type="submit">+</button>
-  </form>
+        </li>
+        <%});%>
+      </ul>
+      <input type="text" name='newListItem' placeholder="Add New Task">
+      <button type="submit" class="waves-effect waves-light btn"><i class="tiny material-icons">create</i></button>
+    </form>
+  </div>
 </body>
 
 </html>
