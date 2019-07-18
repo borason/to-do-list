@@ -19,7 +19,7 @@
 
 <body>
   <div class="container">
-    <nav class="teal accent-4">
+    <nav class="teal vamp">
       <div class="nav-wrapper">
         <a href="#" class="brand-logo center">To Do List</a>
       </div>
@@ -30,14 +30,10 @@
           <h4>Task</h4>
         </li>
         <%newItems.forEach((item) => { %>
-        <li class="collection-item">
-          <!-- <button type="submit"><i class="tiny material-icons">delete</i></th></button> -->
-          <label class="list-item">
-            <p><%=item%></p>
-            <input type="checkbox" />
-            <span>Red</span>
-          </label>
-
+        <li class="collection-item center-align z-depth-2">
+          <div class="new-list-item">
+            <%=item%><a href="#!" class="secondary-content"><i class="material-icons">delete</i></a>
+          </div>
         </li>
         <%});%>
       </ul>
