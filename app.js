@@ -74,6 +74,7 @@ app.get('/', (req, res) => {
 
 app.post('/', (req, res) => {
   const newPost = req.body.newListItem;
+  console.log(newPost);
   let capitalizedPost = newPost.charAt(0).toUpperCase() + newPost.slice(1);
   console.log(capitalizedPost);
   Item.create({
@@ -88,5 +89,8 @@ app.post('/', (req, res) => {
   res.redirect('/');
 });
 
+app.post('/delete', (req, res) => {
+  console.log(req.body);
+});
 
 app.listen(port, () => console.log(`Server has started on port ${port}.`));

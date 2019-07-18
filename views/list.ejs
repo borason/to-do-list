@@ -32,7 +32,11 @@
         <%newItems.forEach((item) => { %>
         <li class="collection-item left-align z-depth-2">
           <div class="new-list-item">
-            <%=item.name%><a href="#!" class="secondary-content"><i class="material-icons">delete</i></a>
+            <%=item.name%>
+            <form action="/delete" method="POST">
+              <a href="" class="secondary-content" value="delete"><i class="material-icons">delete</i>
+              </a>
+            </form>
           </div>
         </li>
         <%});%>
