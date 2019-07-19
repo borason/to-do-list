@@ -68,8 +68,6 @@ app.get('/', (req, res) => {
     });
   });
 
-
-
 });
 
 app.post('/', (req, res) => {
@@ -90,7 +88,15 @@ app.post('/', (req, res) => {
 });
 
 app.post('/delete', (req, res) => {
-  console.log(req.body);
+  const deletedItem = req.body.checkbox;
+  Item.findByIdAndRemove(deletedItem, (err) => {
+    if (err) {
+      console.log(err);
+    } else {
+      console.log('Item deleted from DB');
+    }
+  });
+  res.redirect('/');
 });
 
 app.listen(port, () => console.log(`Server has started on port ${port}.`));
