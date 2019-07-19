@@ -3,6 +3,7 @@
 const express = require("express");
 const bodyParser = require("body-parser");
 const mongoose = require("mongoose");
+const _ = require('lodash');
 const app = express();
 // const ejs = require('ejs');
 const port = 3000;
@@ -10,6 +11,8 @@ const port = 3000;
 mongoose.connect("mongodb://localhost:27017/todolistDB", {
   useNewUrlParser: true
 });
+
+mongoose.set('useFindAndModify', false);
 
 const itemSchema = new mongoose.Schema({
   name: String
@@ -23,12 +26,12 @@ const item2 = new Item({
   name: "Enter a task and hit the send button."
 });
 const item3 = new Item({
-  name: "Click on the garbage can to delete a task"
+  name: "Click on the checkbox can to delete a task"
 });
 
 const defaultItems = [item1, item2, item3];
 
-// Item.insertMany(defaultItems, (req, res) => {
+// Item.insertMany(defaultItems, (req, res, err) => {
 //   if (err) {
 //     console.log(err);
 //   } else {
@@ -59,7 +62,7 @@ app.get("/", (req, res) => {
   Item.find(function (err, foundItems) {
     if (foundItems === 0) {
       // if not loads the default items for the list
-      Item.insertMany(defaultItems, (req, res) => {
+      Item.insertMany(defaultItems, (req, res, err) => {
         if (err) {
           console.log(err);
         } else {
@@ -101,23 +104,39 @@ app.post("/", (req, res) => {
 });
 
 app.post("/delete", (req, res) => {
-  const deletedItem = req.body.checkbox;
+  // Gets id # and list title from deleted item
+  const checkedItemId = req.body.checkbox;
   const listName = req.body.listName;
-  console.log(listName);
   //
+  // If deleted from home page, then delete from itemDB
+  if (listName === 'Today') {
+    Item.findByIdAndRemove(checkedItemId, err => {
+      if (!err) {
+        console.log('Successfully deleted item from DB');
+        res.redirect("/");
+      }
+    });
+  } else {
+    // If deleted from different route then searches lists collection to find correct item
+    List.findOneAndUpdate({
+      name: listName
+    }, {
+      $pull: {
+        items: {
+          _id: checkedItemId
+        }
+      }
+    }, (err, foundList) => {
+      if (!err) {
+        res.redirect('/' + listName);
+      }
+    });
+  }
 
-  Item.findByIdAndRemove(deletedItem, err => {
-    if (err) {
-      console.log(err);
-    } else {
-      console.log("Item deleted from DB");
-    }
-  });
-  res.redirect("/");
 });
 
 app.get("/:listName", (req, res) => {
-  const listName = req.params.listName;
+  const listName = _.capitalize(req.params.listName);
 
   List.findOne({
     name: listName
