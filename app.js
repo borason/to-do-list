@@ -44,6 +44,7 @@ const listSchema = {
 const List = mongoose.model("List", listSchema);
 
 app.set("view engine", "ejs");
+
 app.use(
   bodyParser.urlencoded({
     extended: true
@@ -53,17 +54,11 @@ app.use(
 app.use(express.static("public"));
 
 app.get("/", (req, res) => {
-  // const today = new Date();
-  // var options = {
-  //   weekday: "long",
-  //   year: "numeric",
-  //   month: "long",
-  //   day: "numeric"
-  // };
-  // let date = today.toLocaleDateString("en-US", options);
 
+  // checks to see if there any items saved inside the database
   Item.find(function (err, foundItems) {
     if (foundItems === 0) {
+      // if not loads the default items for the list
       Item.insertMany(defaultItems, (req, res) => {
         if (err) {
           console.log(err);
@@ -80,32 +75,37 @@ app.get("/", (req, res) => {
 });
 
 app.post("/", (req, res) => {
+  // gets the value of text posted from 'add new task' text filt
   const newItem = req.body.newListItem;
   const listName = req.body.list;
   let capitalizedNewItem = newItem.charAt(0).toUpperCase() + newItem.slice(1);
+  // creates the new item
   const item = new Item({
     name: capitalizedNewItem
   });
+  // if the list name is equal to today it adds the new task to database and refreshes the page
   if (listName === 'Today') {
     item.save();
     res.redirect("/");
   } else {
+    // if not checks the list DB to see if the list exists
     List.findOne({
       name: listName
     }, (err, foundList) => {
-      console.log(foundList);
+      // saves the item to the list found in the DB
       foundList.items.push(item);
       foundList.save();
       res.redirect('/' + listName);
     });
-
-
   }
-
 });
 
 app.post("/delete", (req, res) => {
   const deletedItem = req.body.checkbox;
+  const listName = req.body.listName;
+  console.log(listName);
+  //
+
   Item.findByIdAndRemove(deletedItem, err => {
     if (err) {
       console.log(err);
@@ -129,7 +129,6 @@ app.get("/:listName", (req, res) => {
           name: listName,
           items: defaultItems
         });
-        console.log(listName);
         list.save();
         res.redirect('/' + listName);
       } else {
