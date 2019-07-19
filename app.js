@@ -53,14 +53,14 @@ app.use(
 app.use(express.static("public"));
 
 app.get("/", (req, res) => {
-  const today = new Date();
-  var options = {
-    weekday: "long",
-    year: "numeric",
-    month: "long",
-    day: "numeric"
-  };
-  let date = today.toLocaleDateString("en-US", options);
+  // const today = new Date();
+  // var options = {
+  //   weekday: "long",
+  //   year: "numeric",
+  //   month: "long",
+  //   day: "numeric"
+  // };
+  // let date = today.toLocaleDateString("en-US", options);
 
   Item.find(function (err, foundItems) {
     if (foundItems === 0) {
@@ -80,22 +80,28 @@ app.get("/", (req, res) => {
 });
 
 app.post("/", (req, res) => {
-  const newPost = req.body.newListItem;
-  console.log(newPost);
-  let capitalizedPost = newPost.charAt(0).toUpperCase() + newPost.slice(1);
-  console.log(capitalizedPost);
-  Item.create({
-      name: capitalizedPost
-    },
-    err => {
-      if (err) {
-        console.log(err);
-      } else {
-        console.log("post successfully added to DB");
-      }
-    }
-  );
-  res.redirect("/");
+  const newItem = req.body.newListItem;
+  const listName = req.body.list;
+  let capitalizedNewItem = newItem.charAt(0).toUpperCase() + newItem.slice(1);
+  const item = new Item({
+    name: capitalizedNewItem
+  });
+  if (listName === 'Today') {
+    item.save();
+    res.redirect("/");
+  } else {
+    List.findOne({
+      name: listName
+    }, (err, foundList) => {
+      console.log(foundList);
+      foundList.items.push(item);
+      foundList.save();
+      res.redirect('/' + listName);
+    });
+
+
+  }
+
 });
 
 app.post("/delete", (req, res) => {
@@ -123,12 +129,13 @@ app.get("/:listName", (req, res) => {
           name: listName,
           items: defaultItems
         });
+        console.log(listName);
         list.save();
         res.redirect('/' + listName);
       } else {
         //show existing list
         res.render('list', {
-          listTitle: foundList.name.toUpperCase(),
+          listTitle: foundList.name,
           newItems: foundList.items
         });
       }
